@@ -1,0 +1,13 @@
+---
+title: "About Me"
+---
+
+This is where you get to write about yourself.
+
+If your favorite color is purple you might show a graph that uses purple.
+
+```{r}
+#| echo: false
+hist(rnorm(10000), col = "purple", main = "Purple Histogram", xlab = "")
+```
+
