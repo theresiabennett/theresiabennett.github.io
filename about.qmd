@@ -8,6 +8,7 @@ If your favorite color is purple you might show a graph that uses purple.
 
 ```{r}
 #| echo: false
+set.seed(123)
 hist(rnorm(10000), col = "purple", main = "Purple Histogram", xlab = "")
 ```
 

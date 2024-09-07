@@ -10,7 +10,10 @@ website:
         text: Home
       - about.qmd
       - project.qmd
+    
     tools:
+      - icon: trash
+        href: https://www.mountainproject.com/area/112001458/the-dump
       - icon: twitter
         href: https://x.com
       - icon: linkedin
@@ -18,9 +21,9 @@ website:
       - icon: github
         menu:
           - text: Source Code
-            href:  https://github.com
+            href: https://github.com
           - text: Report a Bug
-            href:  https://github.com  
+            href: https://github.com  
 
 format:
   html:
