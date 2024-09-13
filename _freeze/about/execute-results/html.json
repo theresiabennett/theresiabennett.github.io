@@ -1,7 +1,7 @@
 {
-  "hash": "d5eb79acdb58a93a9f53d2e0e85d8f8c",
+  "hash": "886819fca153d55f3eaa7900dff1a9b8",
   "result": {
-    "markdown": "---\ntitle: \"About Me\"\n---\n\n\nThis is where you get to write about yourself.\n\nIf your favorite color is purple you might show a graph that uses purple.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](about_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "markdown": "---\ntitle: \"About Me\"\n---\n\n\nI am an Appalachian State University Honors student pursuing a degree in Psychology as well as minors in Public Health and Statistics. I am looking for full-time employment once I graduate in May 2025. Ask me about my service dog in training, George, set to turn into the Canine Companions Southeast training center this November!\n\nIf your favorite color is purple you might show a graph that uses purple.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](about_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
     "supporting": [
       "about_files"
     ],
