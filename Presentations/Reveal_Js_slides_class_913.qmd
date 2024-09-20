@@ -1,0 +1,46 @@
+---
+title: "Dataframes in Tidyverse"
+format: revealjs
+editor: visual
+author: "Theresia Bennett"
+---
+
+## 
+
+Practicing Tidyverse Skills
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+```{r}
+library(tidybiology)
+#each of these sets has one variable in common - ladder score - so they can be combined!
+
+glimpse(happy)
+glimpse(happy_join_one)
+glimpse(happy_full)
+```
+
+## 
+
+Binding Columns
+
+```{r}
+#in order to bind columns, we must see if the fuctions have the same number of rows (they do)
+nrow(happy) == nrow(happy_join_one)
+
+bind_cols(happy, happy_join_one)
+```
+
+## 
+
+Filtering
+
+```{r}
+#filter out all countries from 'happy_full' that are also in 'happy'
+#use the filtering join function (in this case, the anti-joint function gives us the right answer)
+happy_full %>%
+  anti_join(happy)
+```
