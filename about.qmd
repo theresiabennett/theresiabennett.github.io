@@ -2,13 +2,6 @@
 title: "About Me"
 ---
 
-I am an Appalachian State University Honors student pursuing a degree in Psychology as well as minors in Public Health and Statistics. I am looking for full-time employment once I graduate in May 2025. Ask me about my service dog in training, George, set to turn into the Canine Companions Southeast training center this November!
+I am an Appalachian State University Honors student pursuing a degree in Psychology, with a concentration in Health Services, as well as minors in Public Health and Statistics. I have spent the majority of my college career working as a student employee in the Office of Community-Engaged Leadership, and had the opportunity of interning at the Hospitality House of Northwest North Carolina this past summer. I'm currently raising a service dog in training set to turn into the Canine Companions Southeast training center this November! I am currently searching for full-time employment beginning in May 2025. I prefer to spend my free time baking, hiking, and crocheting.
 
-If your favorite color is purple you might show a graph that uses purple.
-
-```{r}
-#| echo: false
-set.seed(123)
-hist(rnorm(10000), col = "purple", main = "Purple Histogram", xlab = "")
-```
-
+I'd love to connect! Feel free to email me at bennetttl@appstate.edu.

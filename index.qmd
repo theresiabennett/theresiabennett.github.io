@@ -1,10 +1,10 @@
 ---
-title: "Quarto Web Demo"
+title: "Theresia Bennett"
 ---
 
-This is the main landing page!
+Welcome!
 
-* To learn more about [geezers](https://www.thegeezer.com/).
+* 
 
 * To learn more about [Quarto websites](https://quarto.org/docs/websites).
 
