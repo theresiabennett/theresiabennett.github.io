@@ -12,8 +12,6 @@ website:
       - project.qmd
     
     tools:
-      - icon: trash
-        href: https://www.mountainproject.com/area/112001458/the-dump
       - icon: file-earmark-text
         href: https://docs.google.com/document/d/1JQzMnEPq7ZdGz0ysf_Qd0tWGoveu31lDlhtnPDQ6C8M/edit
       - icon: linkedin
@@ -21,9 +19,9 @@ website:
       - icon: github
         menu:
           - text: Source Code
-            href: https://github.com
+            href: https://github.com/theresiabennett
           - text: Report a Bug
-            href: https://github.com  
+            href: https://github.com
 
 format:
   html:

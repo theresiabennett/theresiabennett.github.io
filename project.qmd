@@ -1,5 +1,5 @@
 ---
-title: "Projects"
+title: "Academic Projects"
 ---
 
 * [Dataframes in Tidyverse: Questions 1-3](./Presentations/Reveal_Js_slides_class_913.qmd)
