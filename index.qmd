@@ -3,14 +3,14 @@ title: "Theresia Bennett"
 ---
 
 
-Appalachian State University Honors student pursuing a Bachelor of Science in Psychology, Health Services Concentration, with minors in Public Health and Statistics. Currently looking for full-time work beginning in May 2025.
+Appalachian State University Honors student pursuing a Bachelor of Science in Psychology, Health Studies Concentration, with minors in Public Health and Statistics. Currently looking for full-time work beginning in May 2025.
 
-![Theresia](./Photos/IMG_2435.jpg)
+![Theresia](./Photos/IMG_2435.jpg){width=200}
 
 I'd love to connect! Feel free to email me at bennetttl@appstate.edu.
 
 
 Theresia has spent the majority of her college career working as a student employee in the ASU Office of Community-Engaged Leadership, and had the opportunity of interning at the Hospitality House of Northwest North Carolina this past summer. She is currently raising a service dog in training set to turn into the Canine Companions Southeast training center this November. Originally from Cary, NC, she prefers to spend her free time baking, hiking, and crocheting.
 
-![Intern](./Photos/Hosphouse.jpg)
-![George](./Photos/Georgefield.jpg)
+![Intern](./Photos/Hosphouse.jpg){width=200}
+![George](./Photos/Georgefield.jpg){width=187}
