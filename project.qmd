@@ -7,4 +7,4 @@ title: "Academic Projects"
 * [Project 3]()
 * [Project 4]()
 
-* [R4DS Ch 1](./r4ds-exercises-theresiabennett/CH01.qmd)
+* [R4DS Exercises](https://stt2860-f2024.github.io/r4ds-exercises-theresiabennett/)
