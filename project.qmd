@@ -3,8 +3,6 @@ title: "Academic Projects"
 ---
 
 * [Dataframes in Tidyverse: Questions 1-3](./Presentations/Reveal_Js_slides_class_913.qmd)
-* [Project 2]()
-* [Project 3]()
-* [Project 4]()
+* [Final Project: NYT Top Restaurants 2024](./2860_presentation/NYTrestaurants.qmd)
 
 * [R4DS Exercises](https://stt2860-f2024.github.io/r4ds-exercises-theresiabennett/)
