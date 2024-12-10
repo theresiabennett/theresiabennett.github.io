@@ -1,0 +1,398 @@
+# NY Times Best Restaurants 2024
+This is an exploration into the New York Times top 50 best rated restaurants in the year 2024. With a variety of cuisines present across the US, this list is often referenced by food lovers to find their next restaurant to explore. 
+
+## Load Necessary Packages
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Importing Data
+
+This dataset was imported from [Kaggle](https://www.kaggle.com/datasets/rummagelabs/nytimes-best-restaurants-2024). The file was imported and then inspected using the `read.csv()` function.
+
+```{r}
+library(readr)
+restaurants <- read.csv(file = "./nytimes_best_restaurants_2024.csv",
+                        header = TRUE,
+                        stringsAsFactors = FALSE)
+```
+
+
+## Examining Data
+
+Lets take a look into our dataset.
+```{r}
+#| echo: false
+glimpse(restaurants)
+```
+The NY Times Best Restaurants dataset outlines the top 50 best voted restaurants in America in 2024. Perfect for food lovers, this list showcases the locations, cuisines, chefs, and styles of each of the restaurants that have been top rated by the NYTimes. It also includes the restaurant's address and website URL so interested diners can learn more information or make a trip to the restaurant of their choosing. 
+
+Of the 8 variables included in this list, the categorical measures of `city`, `state`, and `cuisine_type` are going to be the most useful to us.
+
+## Plotting and Exploring Trends
+
+Lets start by looking at the number of restaurants included in each state.
+
+```{r}
+#| echo: false
+#| label: restaurants-by-state
+#| fig-cap: "Figure 1: Bar graph showing how many top rated restaurants are in each state."
+ggplot(restaurants, aes(state)) +
+  geom_bar(fill = "blue") +
+  theme_bw() +
+  labs(x = "State", y = "Number", title = "Restaurants per State")
+```
+It's visible that California has the most restaurants that made the list, 5, but otherwise this graph isn't very helpful. Lets simplify it. How many states have restaurants that made the top 50?
+
+```{r}
+restaurants |>
+  summarize(nds = n_distinct(state))
+```
+
+Out of 51 states (since Washington, DC is included), 28 have restaurants included in the NYTimes top 50. Of those states, which had the highest number of restaurants on the list?
+
+```{r}
+#| echo: false
+
+state_n <- restaurants %>% 
+  count(state, name = "n_restaurants") %>%
+  arrange(desc(n_restaurants))
+
+print(state_n)
+```
+It looks like the most are located in California and New York.
+
+I wonder, what regions of the US had the most restaurants included?
+
+```{r}
+#| echo: false
+#| label: restaurants-by-region
+#| fig-cap: "Figure 2: Bar graph showing how many top restaurants are in each region. "
+#| 
+restaurants_region <- restaurants |> 
+  mutate(region = case_when(
+      state %in% c("AZ", "CA", "CO", "OR", "WA") ~ "West",
+      state %in% c("IL", "MN", "OH") ~ "Midwest",
+      state %in% c("CT", "MA", "ME", "MD", "MI", "NJ", "NY", "RI", "PA") ~ "Northeast",
+      state %in% c("FL", "GA", "KY", "LA", "NC", "OK", "SC", "TN", "TX", "VA", "Washington, DC") ~ "South"
+    ))
+
+ggplot(restaurants_region, aes(region)) +
+  geom_bar(aes(color = state)) +
+  theme_bw() +
+  labs(x = "Region", y = "Number of Restaurants", title = "Top Restaurants per Region", color = "State")
+```
+It looks like the highest proportion of restaurants, 20, are located in the South, which includes 11 states. The lowest proportion, 4, are located in the midwest, which includes 3 states.
+
+Here's another representation of the same data, which may make it easier to see the number of restaurants in each region.
+
+```{r}
+#| echo: false
+#| label: restaurants-by-region-2
+#| fig-cap: "Figure 3: Faceted bar graph showing how many top restaurants are in each region. "
+
+ggplot(restaurants_region, aes(state)) +
+  geom_bar(aes(fill = region)) +
+  facet_wrap(~ region, scales = "free_x") +
+  theme(axis.ticks.x = element_blank()) +
+  theme_minimal() +
+  labs(x = "State", y = "Number of Restaurants", title = "Top Restaurants per Region", fill = "Region") 
+```
+In this graph, it is visible that more states are on the list in the South and Northeast than the West and Midwest. Are there any popular cities that contain more than one high-rated restaurant?
+
+```{r}
+city_count <- restaurants_region %>%
+  count(city, name = "n_restaurants") %>%
+  filter(n_restaurants > 1) %>%
+  summarize(total_cities = n())
+
+print(city_count)
+```
+
+Yes, it looks like 10 cities have more than 1 restaurant. Lets find a better way to visualize this.
+
+```{r}
+#| echo: false
+#| label: cities-more-than-1
+#| fig-cap: "Figure 4: Plot showing the cities with more than 2 restaurants on the NYTimes list."
+
+cities_with_more_than_1 <- restaurants %>%
+    count(city, name = "num_restaurants") %>%
+    filter(num_restaurants > 1)
+
+ggplot(cities_with_more_than_1, aes(x = reorder(city, num_restaurants), y = num_restaurants)) +
+    geom_point(color = "blue", size = 3) +
+    scale_y_continuous(limits = c(1, 3)) +
+    coord_flip() +
+    labs(x = "City", y = "Number of Restaurants", title = "Cities with More Than 1 Restaurant") +
+    theme_minimal()
+```
+
+
+There are many different types of cuisines restaurants on this list serve. Lets see how many types there are.
+
+```{r}
+restaurants |>
+  summarize(nds = n_distinct(cuisine_type))
+```
+
+```{r}
+#| echo: false
+
+cuisine_n <- restaurants %>% 
+  count(cuisine_type, name = "n_cuisine") %>%
+  arrange(desc(n_cuisine))
+
+print(cuisine_n)
+```
+
+34 different cuisines, with the most being New American. However, some of these cuisine types are mixed or repeated, so lets simplify them and see how many of each are in our new set.
+
+```{r}
+#| echo: false
+#| label: restaurants-by-cuisine
+#| fig-cap: "Figure 5: Bar graph showing the types of cuisine, simplified. "
+
+cuisine_restaurants <- restaurants |> 
+  mutate(simple_cuisine = case_when(
+      cuisine_type %in% c("New American", "Southern", "Oyster, New American", "Soul Food, Southern") ~ "American",
+      cuisine_type %in% c("Indian", "Korean", "Vietnamese", "Cantonese", "Chinese, Cantonese", "Hmong", "Laotian", "Levantine", "Thai") ~ "Asian",
+      cuisine_type %in% c("Mexican", "Guamanian") ~ "Hispanic",
+      cuisine_type %in% c("Persian", "Kurdish, Turkish") ~ "Middle Eastern",
+      cuisine_type %in% c("French, New American", "French-Japanese", "Indo-Tex", "Italian, New American", "Thai, Chinese") ~ "Mixed",
+      cuisine_type %in% c("French", "Italian, Pizza", "Mediterranean", "Nordic Seafood", "Polish", "Scottish") ~ "European",
+      cuisine_type %in% c("Seafood", "Barbecue", "Bistro", "Soul Food", "Raw Bar", "Steakhouse") ~ "Other"
+    ))
+
+ggplot(cuisine_restaurants, aes(simple_cuisine)) +
+  geom_bar(fill = "blue") +
+  theme_bw() +
+  labs(x = "Cuisine", y = "Count", title = "Types of Cuisine") +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10, 12))
+```
+
+It looks like the highest proportion of restaurants serve Asian or American food. Now lets return to the 10 popular cities that had more than 1 top restaurant. What type of cuisine do these city's restaurants serve? 
+
+```{r}
+#| echo: false
+#| label: cuisine-more-than-1
+#| fig-cap: "Figure 6: Faceted bar graph showing the cuisines in cities with more than one restaurant on the NYTimes list."
+
+cuisine_region_restaurants <- restaurants |>
+  mutate(simple_cuisine = case_when(
+      cuisine_type %in% c("New American", "Southern", "Oyster, New American", "Soul Food, Southern") ~ "American",
+      cuisine_type %in% c("Indian", "Korean", "Vietnamese", "Cantonese", "Chinese, Cantonese", "Hmong", "Laotian", "Levantine", "Thai") ~ "Asian",
+      cuisine_type %in% c("Mexican", "Guamanian") ~ "Hispanic",
+      cuisine_type %in% c("Persian", "Kurdish, Turkish") ~ "Middle Eastern",
+      cuisine_type %in% c("French, New American", "French-Japanese", "Indo-Tex", "Italian, New American", "Thai, Chinese") ~ "Mixed",
+      cuisine_type %in% c("French", "Italian, Pizza", "Mediterranean", "Nordic Seafood", "Polish", "Scottish") ~ "European",
+      cuisine_type %in% c("Seafood", "Barbecue", "Bistro", "Soul Food", "Raw Bar", "Steakhouse") ~ "Other"
+    ),
+    region = case_when(
+      state %in% c("AZ", "CA", "CO", "OR", "WA") ~ "West",
+      state %in% c("IL", "MN", "OH") ~ "Midwest",
+      state %in% c("CT", "MA", "ME", "MD", "MI", "NJ", "NY", "RI", "PA") ~ "Northeast",
+      state %in% c("FL", "GA", "KY", "LA", "NC", "OK", "SC", "TN", "TX", "VA", "Washington, DC") ~ "South"
+    ))
+
+cities_with_more_than_1 <- cuisine_region_restaurants %>%
+    count(city, name = "num_restaurants") %>%
+    filter(num_restaurants > 1) %>%
+    pull(city)
+
+filtered_data <- cuisine_region_restaurants %>%
+    filter(city %in% cities_with_more_than_1, !is.na(simple_cuisine))
+
+ggplot(filtered_data, aes(x = simple_cuisine, fill = region)) +
+    geom_bar() +
+    facet_wrap(~ city, scales = "fixed") +  
+    labs(x = "Cuisine", y = "Number of Restaurants", title = "Cuisine Types in Cities with More Than 1 Restaurant", fill = "Region"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+So cuisines in Atlanta and Denver are the same, but all other cities have top restaurants with different cuisines. The region label also tells us that most of the top cities are in the South and the West.
+
+Lets see what that graph would look like if we analized by the cuisines in the top states, instead of the top cities. To start, lets see how many states have more than one restaurant.
+```{r}
+states_with_more_than_1 <- restaurants %>%
+    count(state, name = "num_restaurants") %>%
+    filter(num_restaurants > 1)
+
+states_with_more_than_1 %>%
+    arrange(desc(num_restaurants))
+```
+
+14 states have more than one restaurant, with CA and NY having the most. Only five have more than two so lets focus on these for the next graph. How do these distribute in terms of cuisine?
+
+```{r}
+#| echo: false
+#| label: cuisine-more-than-2
+#| fig-cap: "Figure 7: Faceted bar graph showing the cuisines in states with more than two restaurants on the NYTimes list."
+
+cuisine_region_restaurants <- restaurants |>
+  mutate(simple_cuisine = case_when(
+      cuisine_type %in% c("New American", "Southern", "Oyster, New American", "Soul Food, Southern") ~ "American",
+      cuisine_type %in% c("Indian", "Korean", "Vietnamese", "Cantonese", "Chinese, Cantonese", "Hmong", "Laotian", "Levantine", "Thai") ~ "Asian",
+      cuisine_type %in% c("Mexican", "Guamanian") ~ "Hispanic",
+      cuisine_type %in% c("Persian", "Kurdish, Turkish") ~ "Middle Eastern",
+      cuisine_type %in% c("French, New American", "French-Japanese", "Indo-Tex", "Italian, New American", "Thai, Chinese") ~ "Mixed",
+      cuisine_type %in% c("French", "Italian, Pizza", "Mediterranean", "Nordic Seafood", "Polish", "Scottish") ~ "European",
+      cuisine_type %in% c("Seafood", "Barbecue", "Bistro", "Soul Food", "Raw Bar", "Steakhouse") ~ "Other"
+    ),
+    region = case_when(
+      state %in% c("AZ", "CA", "CO", "OR", "WA") ~ "West",
+      state %in% c("IL", "MN", "OH") ~ "Midwest",
+      state %in% c("CT", "MA", "ME", "MD", "MI", "NJ", "NY", "RI", "PA") ~ "Northeast",
+      state %in% c("FL", "GA", "KY", "LA", "NC", "OK", "SC", "TN", "TX", "VA", "Washington, DC") ~ "South"
+    ))
+
+states_with_more_than_2 <- cuisine_region_restaurants %>%
+    count(state, name = "num_restaurants") %>%
+    filter(num_restaurants > 2) %>%
+    pull(state)
+
+filtered_data <- cuisine_region_restaurants %>%
+    filter(state %in% states_with_more_than_2, !is.na(simple_cuisine))
+
+ggplot(filtered_data, aes(x = simple_cuisine, fill = region)) +
+    geom_bar() +
+    facet_wrap(~ state, scales = "fixed") +  
+    labs(x = "Cuisine", y = "Number of Restaurants", title = "Cuisine Types in States with More Than 2 Restaurants", fill = "Region"
+    ) +
+    theme_minimal() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Mixed cuisine combinations are really popular in CA, while disproportionate amounts of Asian food are in TX, and more European food is in PA. None of the top 5 most popular states are located in the Midwest.
+
+### Local 
+
+It appears that only one North Carolina Restaurant made it onto this list. Lets look a little bit more into [Good Hot Fish](https://www.goodhotfish.com/), located in Asheville. 
+
+```{r}
+#| echo: false
+
+goodhotfish <- restaurants %>%
+  filter(state == "NC")
+  
+print(goodhotfish)
+```
+
+
+## Future Directions
+
+This dataset was interesting to explore, but the data could've been more useful if we knew more about the cities the restaurants were located in. For example, is there a correlation between city population and the scoring of restaurants? 
+
+To explore this, I decided to upload another dataset and explore some correlations. This dataset, named *Population of all US Cities 2024* also comes from [Kaggle](https://www.kaggle.com/datasets/dataanalyst001/population-of-all-us-cities-2024) and was inspected using `read.csv`.
+
+```{r}
+library(readr)
+populations <- 
+  read.csv("./Population of all US Cities 2024.csv")
+
+glimpse(populations)
+```
+
+8 variables are included, including listed city populations in 2020 and 2024, as well as annual population change, and city and state density and area.
+
+We'll start by combining the datasets. First we need to know what columns they have in common in order to determined how to join them.
+
+```{r}
+colnames(populations)
+colnames(restaurants)
+```
+It looks like city and state are in common, and we want to keep the additional variables from the `populations` dataset. Lets call the new dataset `combined_data`.
+
+```{r}
+#| echo: false
+
+populations <- populations %>%
+  rename(
+    city = US.City,
+    state = US.State
+  )
+
+combined_data <- inner_join(populations, restaurants, by = c("city"))
+
+glimpse(combined_data)
+```
+Not all the cities in the NYTimes best restaurants 2024 dataset are present on this list, so we'll only be exploring a limited amount. Now time for some analyses. Does the number of NYT best restaurants in a city correlate with the population of that city?
+
+```{r}
+#| echo: false
+#| label: city_population
+#| fig-cap: "Figure 8: Dot plot showing the population of cities, colored by the amount of restaurants in that city."
+
+city_n <- combined_data %>% 
+  count(city, name = "n_restaurants")
+
+combined_data <- combined_data %>%
+  left_join(city_n, by = "city")
+
+ggplot(combined_data, aes(x = reorder(city, Population.2024), y = Population.2024, color = as.factor(n_restaurants))) +
+  geom_point() +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Population by City", x = "City", y = "Population", color = "Number of Restaurants") +
+  scale_color_manual(values = c("1" = "red", "2" = "blue")) +
+  scale_y_continuous(labels = scales::comma)
+```
+It seems like they slightly correlated, but it's hard to tell. Does it look any different if we compare states instead?
+
+```{r}
+#| echo: false
+#| label: state_population
+#| fig-cap: "Figure 9: Dot plot showing the population of states, colored by the amount of restaurants in that state. The states with multiple population dots had multiple cities on the restaurant list."
+
+state_n <- combined_data %>% 
+  count(state.y, name = "state_n_restaurants")
+
+combined_data <- combined_data %>%
+  left_join(state_n, by = "state.y")
+
+ggplot(combined_data, aes(x = reorder(state.y, Population.2024), y = Population.2024, color = as.factor(state_n_restaurants))) +
+  geom_point() +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Population by State", x = "State", y = "Population", color = "Number of Restaurants") +
+  scale_color_manual(values = c("1" = "red", "2" = "blue", "3" = "purple", "4" = "green")) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+It looks like the states that have 1 or 2 restaurants don't matter much in terms of population, but those who have 3 or more restaurants both have higher population.
+
+Lets see the same graphs but comparing number of restaurants to city area and population density.
+```{r}
+#| echo: false
+#| label: area_restaurants
+#| fig-cap: "Figure 10: Dot plot showing the city area, colored by the amount of restaurants in that city."
+
+ggplot(combined_data, aes(x = reorder(city, Area..mile2.), y = Area..mile2., color = as.factor(n_restaurants))) +
+  geom_point() +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Number of Restaurants by City Area", x = "City", y = "City Area", color = "Number of Restaurants") +
+  scale_color_manual(values = c("1" = "red", "2" = "blue")) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+```{r}
+#| echo: false
+#| label: density_restaurants
+#| fig-cap: "Figure 11: Dot plot showing the city density, colored by the amount of restaurants in that city."
+
+ggplot(combined_data, aes(x = reorder(city, Density...mile2.), y = Density...mile2., color = as.factor(n_restaurants))) +
+  geom_point() +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Number of Restaurants by City Density", x = "City", y = "City Density", color = "Number of Restaurants") +
+  scale_color_manual(values = c("1" = "red", "2" = "blue")) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+It looks like there is limited difference between the amount of restaurants in a city and the amount of people who live there.
