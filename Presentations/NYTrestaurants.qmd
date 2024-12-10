@@ -366,7 +366,7 @@ ggplot(combined_data, aes(x = reorder(state.y, Population.2024), y = Population.
 
 It looks like the states that have 1 or 2 restaurants don't matter much in terms of population, but those who have 3 or more restaurants both have higher population.
 
-Lets see the same graphs but comparing number of restaurants to city area and population density.
+Finally, lets see the same graphs but comparing number of restaurants to city area and population density.
 ```{r}
 #| echo: false
 #| label: area_restaurants
