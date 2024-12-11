@@ -118,7 +118,7 @@ Yes, it looks like 10 cities have more than 1 restaurant. Lets find a better way
 ```{r}
 #| echo: false
 #| label: cities-more-than-1
-#| fig-cap: "Figure 4: Plot showing the cities with more than 2 restaurants on the NYTimes list."
+#| fig-cap: "Figure 4: Plot showing the cities with more than 1 restaurant on the NYTimes list."
 
 cities_with_more_than_1 <- restaurants %>%
     count(city, name = "num_restaurants") %>%
